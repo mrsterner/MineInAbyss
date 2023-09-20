@@ -77,6 +77,8 @@ public class MineInAbyss {
             event.accept(MIAItems.STAR_COMPASS);
             event.accept(MIAItems.THOUSAND_MEN_PINS);
             event.accept(MIAItems.CRADLE_OF_DESIRE);
+            event.accept(MIAItems.MARBLE);
+            event.accept(MIAItems.FLESH);
         }
     }
 

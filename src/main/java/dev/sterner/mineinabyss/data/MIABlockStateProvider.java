@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static dev.sterner.mineinabyss.registry.MIABlocks.FLESH;
 import static dev.sterner.mineinabyss.registry.MIABlocks.MARBLE;
 
 public class MIABlockStateProvider extends LodestoneBlockStateProvider {
@@ -36,5 +37,9 @@ public class MIABlockStateProvider extends LodestoneBlockStateProvider {
         BlockStateSmithTypes.FULL_BLOCK.act(data,
                 MARBLE
         );
+
+        MIABlockStateSmithTypes.VARIABLE_BLOCK.act(data, FLESH);
     }
+
+
 }

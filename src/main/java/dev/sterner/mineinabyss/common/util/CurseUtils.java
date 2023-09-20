@@ -3,7 +3,6 @@ package dev.sterner.mineinabyss.common.util;
 import dev.sterner.mineinabyss.capability.MIAWorldDataCapability;
 import dev.sterner.mineinabyss.common.curse.Curse;
 import dev.sterner.mineinabyss.common.curse.CurseManager;
-import dev.sterner.mineinabyss.registry.MIACurses;
 import dev.sterner.mineinabyss.registry.MIARegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;

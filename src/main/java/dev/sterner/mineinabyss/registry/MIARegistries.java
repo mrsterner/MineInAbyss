@@ -26,6 +26,10 @@ public class MIARegistries {
 
     //Curses
     public static final RegistryObject<Curse> NONE = MIARegistries.CURSE_DEFERRED_REGISTER.register("none", () -> new Curse(CurseIntensity.NONE));
+    public static final RegistryObject<Curse> WEAK = MIARegistries.CURSE_DEFERRED_REGISTER.register("weak", () -> new Curse(CurseIntensity.WEAK));
+    public static final RegistryObject<Curse> MEDIUM = MIARegistries.CURSE_DEFERRED_REGISTER.register("medium", () -> new Curse(CurseIntensity.MEDIUM));
+    public static final RegistryObject<Curse> STRONG = MIARegistries.CURSE_DEFERRED_REGISTER.register("strong", () -> new Curse(CurseIntensity.STRONG));
+    public static final RegistryObject<Curse> SEVERE = MIARegistries.CURSE_DEFERRED_REGISTER.register("severe", () -> new Curse(CurseIntensity.SEVERE));
 
     private static <T> Supplier<IForgeRegistry<T>> makeSyncedRegistry(DeferredRegister<T> deferredRegister) {
         return deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().disableSaving());

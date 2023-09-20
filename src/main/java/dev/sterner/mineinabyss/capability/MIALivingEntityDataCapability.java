@@ -61,4 +61,8 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
     public static LazyOptional<MIALivingEntityDataCapability> getCapabilityOptional(LivingEntity entity) {
         return entity.getCapability(CAPABILITY);
     }
+
+    public static MIALivingEntityDataCapability getCapability(LivingEntity entity) {
+        return entity.getCapability(CAPABILITY).orElse(new MIALivingEntityDataCapability());
+    }
 }
