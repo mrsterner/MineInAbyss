@@ -1,20 +1,15 @@
 package dev.sterner.mineinabyss.client.gui.hud;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.sterner.mineinabyss.MineInAbyss;
 import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.common.curse.CurseManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
-import team.lodestar.lodestone.systems.rendering.VFXBuilders;
 
 public class CurseHudRenderer {
 

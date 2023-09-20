@@ -10,7 +10,7 @@ public class MIABlockStateSmithTypes {
     public static BlockStateSmith<Block> VARIABLE_BLOCK = new BlockStateSmith<>(Block.class, (block, provider) -> {
         String name = provider.getBlockName(block);
 
-        ModelFile var0 = provider.models().cubeAll(name, MineInAbyss.id("block/" + name ));
+        ModelFile var0 = provider.models().cubeAll(name, MineInAbyss.id("block/" + name));
         ModelFile var1 = provider.models().cubeAll(name + "_1", MineInAbyss.id("block/" + name + "_1"));
         ModelFile var2 = provider.models().cubeAll(name + "_2", MineInAbyss.id("block/" + name + "_2"));
 

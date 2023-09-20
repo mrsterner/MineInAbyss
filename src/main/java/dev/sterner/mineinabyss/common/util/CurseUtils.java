@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class CurseUtils {
 
-    public boolean canBeAbyssChunk(Level world, ChunkPos chunkPos){
+    public boolean canBeAbyssChunk(Level world, ChunkPos chunkPos) {
         Optional<MIAWorldDataCapability> worldDataCapabilityOptional = null;//TODO
         if (worldDataCapabilityOptional.isPresent()) {
             MIAWorldDataCapability worldAbyssComponent = worldDataCapabilityOptional.get();
@@ -53,14 +53,10 @@ public class CurseUtils {
             manager.setTimeSpentOnY(livingEntity.getBlockY(), livingEntity.tickCount);
         }
 
-        if (livingEntity.getBlockY() - manager.getTimeSpentOnY().y() > 8) {
-            return true;
-        }
-
-        return false;
+        return livingEntity.getBlockY() - manager.getTimeSpentOnY().y() > 8;
     }
 
-    public static void updateLowestY(CurseManager manager, LivingEntity livingEntity){
+    public static void updateLowestY(CurseManager manager, LivingEntity livingEntity) {
         if (manager.getTimeSpentOnY() == null) {
             manager.setTimeSpentOnY(livingEntity.getBlockY(), livingEntity.tickCount);
         }

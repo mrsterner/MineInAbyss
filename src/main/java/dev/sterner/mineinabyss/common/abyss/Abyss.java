@@ -17,7 +17,7 @@ public class Abyss {
     public List<AbyssLayer> layerList;
     public List<ChunkPos> chunkPosList;
 
-    private Abyss(){
+    private Abyss() {
 
     }
 
@@ -64,17 +64,17 @@ public class Abyss {
         private final Abyss abyss = new Abyss();
         private final ChunkPos centerChunk;
 
-        public Builder(Level world, ChunkPos chunkPos){
+        public Builder(Level world, ChunkPos chunkPos) {
             this.abyss.world = world;
             this.abyss.chunkPosList.add(chunkPos);
             this.centerChunk = chunkPos;
         }
 
-        public Abyss build(){
+        public Abyss build() {
             return abyss;
         }
 
-        public Builder addChunksRadius(int radiusInChunks){
+        public Builder addChunksRadius(int radiusInChunks) {
             int centerX = centerChunk.x;
             int centerZ = centerChunk.z;
 
@@ -92,7 +92,7 @@ public class Abyss {
             return this;
         }
 
-        public Builder addLayer(AbyssLayer layer){
+        public Builder addLayer(AbyssLayer layer) {
             this.abyss.layerList.add(layer);
             return this;
         }

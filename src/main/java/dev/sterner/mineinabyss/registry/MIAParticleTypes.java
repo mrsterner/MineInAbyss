@@ -2,7 +2,6 @@ package dev.sterner.mineinabyss.registry;
 
 import dev.sterner.mineinabyss.MineInAbyss;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 

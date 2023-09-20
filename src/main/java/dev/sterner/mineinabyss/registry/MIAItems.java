@@ -18,7 +18,7 @@ public interface MIAItems {
     RegistryObject<Item> FLESH = ITEMS.register("flesh", () -> new BlockItem(MIABlocks.FLESH.get(), settings()));
     RegistryObject<Item> MARBLE = ITEMS.register("marble", () -> new BlockItem(MIABlocks.MARBLE.get(), settings()));
 
-    private static Item.Properties settings(){
+    private static Item.Properties settings() {
         return new Item.Properties();
     }
 }

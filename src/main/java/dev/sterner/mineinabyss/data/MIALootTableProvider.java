@@ -2,27 +2,21 @@ package dev.sterner.mineinabyss.data;
 
 import dev.sterner.mineinabyss.registry.MIABlocks;
 import dev.sterner.mineinabyss.registry.MIAEntityTypes;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeEntityTypeTagsProvider;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -60,21 +54,21 @@ public class MIALootTableProvider extends LootTableProvider {
         }
     }
 
-        public static class Entities extends EntityLootSubProvider {
+    public static class Entities extends EntityLootSubProvider {
 
-            public Entities() {
-                super(FeatureFlags.REGISTRY.allFlags());
-            }
+        public Entities() {
+            super(FeatureFlags.REGISTRY.allFlags());
+        }
 
-            @Override
-            public void generate() {
+        @Override
+        public void generate() {
 
-            }
+        }
 
-            @Override
-            protected Stream<EntityType<?>> getKnownEntityTypes() {
-                return MIAEntityTypes.ENTITY_TYPES.getEntries().stream().map(Supplier::get);
-            }
+        @Override
+        protected Stream<EntityType<?>> getKnownEntityTypes() {
+            return MIAEntityTypes.ENTITY_TYPES.getEntries().stream().map(Supplier::get);
+        }
     }
 
 }

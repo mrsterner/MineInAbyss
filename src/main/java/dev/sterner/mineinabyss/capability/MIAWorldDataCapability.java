@@ -11,11 +11,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.network.PacketDistributor;
-import team.lodestar.lodestone.capability.LodestoneWorldDataCapability;
 import team.lodestar.lodestone.systems.capability.LodestoneCapability;
 import team.lodestar.lodestone.systems.capability.LodestoneCapabilityProvider;
 
@@ -24,7 +21,7 @@ import java.util.List;
 
 public class MIAWorldDataCapability implements LodestoneCapability {
 
-    private List<Abyss> abyssList = new ArrayList<>();
+    private final List<Abyss> abyssList = new ArrayList<>();
 
     public static Capability<MIAWorldDataCapability> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
@@ -32,7 +29,7 @@ public class MIAWorldDataCapability implements LodestoneCapability {
     public MIAWorldDataCapability() {
     }
 
-    public void addAbyss(Abyss abyss){
+    public void addAbyss(Abyss abyss) {
         abyssList.add(abyss);
         //TODO sync?
     }
@@ -69,7 +66,7 @@ public class MIAWorldDataCapability implements LodestoneCapability {
 
         ListTag nbtList = nbt.getList(Constants.Nbt.ABYSS, Tag.TAG_COMPOUND);
 
-        for(int i = 0; i < nbtList.size(); ++i) {
+        for (int i = 0; i < nbtList.size(); ++i) {
             CompoundTag nbtCompound = nbtList.getCompound(i);
             Abyss abyss = Abyss.readAbyssNbt(nbtCompound);
             abyssList.add(abyss);

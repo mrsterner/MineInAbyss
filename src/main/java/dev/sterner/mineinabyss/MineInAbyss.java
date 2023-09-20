@@ -1,7 +1,8 @@
 package dev.sterner.mineinabyss;
 
 import dev.sterner.mineinabyss.data.*;
-import dev.sterner.mineinabyss.registry.*;
+import dev.sterner.mineinabyss.registry.MIAItems;
+import dev.sterner.mineinabyss.registry.MIARegistries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
@@ -19,7 +20,8 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.*;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -44,8 +46,8 @@ public class MineInAbyss {
                     .title(Component.translatable("itemGroup." + MODID + ".main"))
                     .icon(() -> MIAItems.STAR_COMPASS.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
-                    output.accept(MIAItems.STAR_COMPASS.get());
-            }).build()
+                        output.accept(MIAItems.STAR_COMPASS.get());
+                    }).build()
     );
 
     public MineInAbyss() {

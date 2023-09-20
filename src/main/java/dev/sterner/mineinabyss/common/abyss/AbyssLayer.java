@@ -13,7 +13,7 @@ public class AbyssLayer {
     public int topY;
     public Curse curse;
 
-    public AbyssLayer(int topY, int bottomY, Curse curse){
+    public AbyssLayer(int topY, int bottomY, Curse curse) {
         this.topY = topY;
         this.bottomY = bottomY;
         this.curse = curse;

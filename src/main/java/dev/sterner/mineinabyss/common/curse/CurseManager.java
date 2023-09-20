@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class CurseManager {
@@ -23,7 +22,7 @@ public class CurseManager {
     private int currentY;
     private TimeSpentOnY timeSpentOnY;
 
-    public CurseManager(){
+    public CurseManager() {
 
     }
 
@@ -150,7 +149,7 @@ public class CurseManager {
         return timeSpentOnY;
     }
 
-    public void setTimeSpentOnY(TimeSpentOnY timeSpentOnY){
+    public void setTimeSpentOnY(TimeSpentOnY timeSpentOnY) {
         this.timeSpentOnY = timeSpentOnY;
         sync();
     }
@@ -168,9 +167,10 @@ public class CurseManager {
         sync();
     }
 
-    private void sync(){
+    private void sync() {
         //TODO
     }
 
-    public record TimeSpentOnY(int y, long age){}
+    public record TimeSpentOnY(int y, long age) {
+    }
 }
