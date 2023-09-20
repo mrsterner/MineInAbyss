@@ -4,6 +4,7 @@ import dev.sterner.mineinabyss.capability.MIAWorldDataCapability;
 import dev.sterner.mineinabyss.common.curse.Curse;
 import dev.sterner.mineinabyss.common.curse.CurseManager;
 import dev.sterner.mineinabyss.registry.MIACurses;
+import dev.sterner.mineinabyss.registry.MIARegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ChunkPos;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public class CurseUtils {
+
     public boolean canBeAbyssChunk(Level world, ChunkPos chunkPos){
         Optional<MIAWorldDataCapability> worldDataCapabilityOptional = null;//TODO
         if (worldDataCapabilityOptional.isPresent()) {
@@ -20,7 +22,6 @@ public class CurseUtils {
             if (!bl) {
                 tryGenerateAbyss(worldAbyssComponent, chunkPos);
             }
-
         }
         return false;
     }
@@ -30,12 +31,13 @@ public class CurseUtils {
     }
 
     private boolean tooCloseAbyss(MIAWorldDataCapability world, ChunkPos chunkPos) {
-        return false;//TODO dodge
+
+        return false;//TODO cheat
     }
 
     //TODO implement
     public static Curse getWorldCurse(Level world, BlockPos blockPos) {
-        return MIACurses.NONE.get();
+        return MIARegistries.NONE.get();
     }
 
     //TODO implement
@@ -53,7 +55,6 @@ public class CurseUtils {
         }
 
         if (livingEntity.getBlockY() - manager.getTimeSpentOnY().y() > 8) {
-
             return true;
         }
 
@@ -61,17 +62,13 @@ public class CurseUtils {
     }
 
     public static void updateLowestY(CurseManager manager, LivingEntity livingEntity){
-        if (manager.isInCurse()) {
-            if (manager.getTimeSpentOnY() == null) {
-                manager.setTimeSpentOnY(livingEntity.getBlockY(), livingEntity.tickCount);
-            }
+        if (manager.getTimeSpentOnY() == null) {
+            manager.setTimeSpentOnY(livingEntity.getBlockY(), livingEntity.tickCount);
+        }
 
-            int y = livingEntity.getOnPos().getY();
-            if (y < manager.getTimeSpentOnY().y()) {
-                manager.setTimeSpentOnY(y, manager.getTimeSpentOnY().age());
-            }
-        } else {
-            manager.setTimeSpentOnY(null);
+        int y = livingEntity.blockPosition().getY();
+        if (y < manager.getTimeSpentOnY().y()) {
+            manager.setTimeSpentOnY(y, manager.getTimeSpentOnY().age());
         }
     }
 }

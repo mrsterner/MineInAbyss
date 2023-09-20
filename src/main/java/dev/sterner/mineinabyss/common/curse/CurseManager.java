@@ -1,5 +1,6 @@
 package dev.sterner.mineinabyss.common.curse;
 
+import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.common.util.Constants;
 import dev.sterner.mineinabyss.common.util.CurseUtils;
 import dev.sterner.mineinabyss.registry.MIARegistries;
@@ -7,57 +8,71 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class CurseManager {
     private final int MAX_COOLDOWN = 2 * 20;
     private boolean isInCurse = false;
     private boolean wasInCurse = false;
     private boolean isImmune = false;
-    private Curse curse;
+    private Curse curse = MIARegistries.NONE.get();
     private int checkCooldown = 0;
     private int currentY;
     private TimeSpentOnY timeSpentOnY;
-    private LivingEntity livingEntity;
 
-    public CurseManager(LivingEntity livingEntity){
-        this.livingEntity = livingEntity;
+    public CurseManager(){
+
     }
 
-    public void serverTick() {
+    public static void tickServer(LivingEvent.LivingTickEvent event) {
+        LivingEntity livingEntity = event.getEntity();
 
-        checkCooldown++;
+        if (!(livingEntity instanceof Player)) {
+            return;//TODO remove replace with humanoid
+        }
 
-        tryAddCurse();
+        LazyOptional<MIALivingEntityDataCapability> capabilityOptional = MIALivingEntityDataCapability.getCapabilityOptional(livingEntity);
+        if (capabilityOptional.isPresent()) {
+            CurseManager manager = capabilityOptional.orElse(new MIALivingEntityDataCapability()).manager;
 
-        if (isInCurse()) {
-            tryUpdateCurseIntensity();
+            manager.checkCooldown++;
 
-            CurseUtils.updateLowestY(this, livingEntity);
-            curse.tickEffect(livingEntity.getCommandSenderWorld(), livingEntity);
+            manager.tryAddCurse(livingEntity);
 
-            if (CurseUtils.checkAscending(this, livingEntity)) {
-                curse.ascensionEffect(livingEntity.getCommandSenderWorld(), livingEntity);
+            if (manager.isInCurse()) {
+                manager.tryUpdateCurseIntensity(livingEntity);
+
+                CurseUtils.updateLowestY(manager, livingEntity);
+
+                //Common
+                manager.curse.tickEffect(livingEntity.getCommandSenderWorld(), livingEntity);
+
+                if (CurseUtils.checkAscending(manager, livingEntity)) {
+                    manager.curse.tickAscensionEffect(livingEntity.getCommandSenderWorld(), livingEntity);
+                }
+
+                //Client
+                if (livingEntity.level() instanceof ClientLevel clientWorld) {
+                    manager.curse.tickClientEffect(clientWorld);
+                    if (CurseUtils.checkAscending(manager, livingEntity)) {
+                        manager.curse.tickAscensionEffectClient(clientWorld);
+                    }
+                }
             }
         }
     }
 
-    public void clientTick(ClientLevel clientWorld) {
-        if (isInCurse()) {
-            curse.tickClient(clientWorld);
-            if (CurseUtils.checkAscending(this, livingEntity)) {
-                curse.ascensionEffectClient(clientWorld);
-            }
-        }
-    }
-
-    private void tryUpdateCurseIntensity() {
+    private void tryUpdateCurseIntensity(LivingEntity livingEntity) {
         Curse worldCurse = CurseUtils.getWorldCurse(livingEntity.level(), livingEntity.blockPosition());
         if (worldCurse != getCurse() && getCurse().getIntensity().getId() < worldCurse.getIntensity().getId()) {
             setCurse(worldCurse);
         }
     }
 
-    private void tryAddCurse() {
+    private void tryAddCurse(LivingEntity livingEntity) {
         if (checkCooldown > MAX_COOLDOWN) {
             checkCooldown = 0;
             boolean bl = CurseUtils.checkIfInCurse(livingEntity.level(), livingEntity, livingEntity.blockPosition());
@@ -95,7 +110,8 @@ public class CurseManager {
     }
 
     public boolean isInCurse() {
-        return isInCurse;
+        return true;
+        //TODO return isInCurse;
     }
 
     public void setInCurse(boolean inCurse) {

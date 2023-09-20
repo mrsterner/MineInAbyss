@@ -21,7 +21,6 @@ import net.minecraftforge.registries.*;
 
 import static dev.sterner.mineinabyss.registry.MIABlockEntityTypes.BLOCK_ENTITY_TYPES;
 import static dev.sterner.mineinabyss.registry.MIABlocks.BLOCKS;
-import static dev.sterner.mineinabyss.registry.MIACurses.CURSES;
 import static dev.sterner.mineinabyss.registry.MIAEntityTypes.ENTITY_TYPES;
 import static dev.sterner.mineinabyss.registry.MIAItems.ITEMS;
 import static dev.sterner.mineinabyss.registry.MIAMobEffects.MOB_EFFECTS;
@@ -53,7 +52,7 @@ public class MineInAbyss {
         ENTITY_TYPES.register(modEventBus);
         MOB_EFFECTS.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
-        CURSES.register(modEventBus);
+        MIARegistries.CURSE_DEFERRED_REGISTER.register(modEventBus);
 
         CREATIVE_MODE_TABS.register(modEventBus);
 

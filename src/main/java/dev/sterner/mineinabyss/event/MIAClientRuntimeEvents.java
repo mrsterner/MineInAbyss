@@ -1,5 +1,6 @@
 package dev.sterner.mineinabyss.event;
 
+import dev.sterner.mineinabyss.common.curse.CurseManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.event.TickEvent;

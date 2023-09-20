@@ -20,6 +20,8 @@ import team.lodestar.lodestone.systems.capability.LodestoneCapabilityProvider;
 
 public class MIALivingEntityDataCapability implements LodestoneCapability {
 
+    public CurseManager manager = new CurseManager();
+
     public static Capability<MIALivingEntityDataCapability> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
 
