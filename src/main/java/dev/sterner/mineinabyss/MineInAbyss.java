@@ -17,8 +17,15 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.*;
+
+import static dev.sterner.mineinabyss.registry.MIABlockEntityTypes.BLOCK_ENTITY_TYPES;
+import static dev.sterner.mineinabyss.registry.MIABlocks.BLOCKS;
+import static dev.sterner.mineinabyss.registry.MIACurses.CURSES;
+import static dev.sterner.mineinabyss.registry.MIAEntityTypes.ENTITY_TYPES;
+import static dev.sterner.mineinabyss.registry.MIAItems.ITEMS;
+import static dev.sterner.mineinabyss.registry.MIAMobEffects.MOB_EFFECTS;
+import static dev.sterner.mineinabyss.registry.MIAParticleTypes.PARTICLE_TYPES;
 
 
 @Mod(MineInAbyss.MODID)
@@ -26,6 +33,7 @@ public class MineInAbyss {
     public static final String MODID = "mineinabyss";
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+
 
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
@@ -39,12 +47,13 @@ public class MineInAbyss {
 
         modEventBus.addListener(this::commonSetup);
 
-        MIABlocks.BLOCKS.register(modEventBus);
-        MIABlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
-        MIAItems.ITEMS.register(modEventBus);
-        MIAEntityTypes.ENTITY_TYPE.register(modEventBus);
-        MIAMobEffects.MOB_EFFECTS.register(modEventBus);
-        MIAParticleTypes.PARTICLE_TYPES.register(modEventBus);
+        BLOCKS.register(modEventBus);
+        BLOCK_ENTITY_TYPES.register(modEventBus);
+        ITEMS.register(modEventBus);
+        ENTITY_TYPES.register(modEventBus);
+        MOB_EFFECTS.register(modEventBus);
+        PARTICLE_TYPES.register(modEventBus);
+        CURSES.register(modEventBus);
 
         CREATIVE_MODE_TABS.register(modEventBus);
 
