@@ -15,5 +15,6 @@ public class Constants {
         String IS_IN_CURSE = "IsInCurse";
         String TIME_Y = "TimeY";
         String TIME_AGE = "TimeAge";
+        String ABYSS = "Abyss";
     }
 }

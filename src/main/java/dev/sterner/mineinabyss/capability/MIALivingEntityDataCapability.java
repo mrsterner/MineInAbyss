@@ -1,6 +1,7 @@
 package dev.sterner.mineinabyss.capability;
 
 import dev.sterner.mineinabyss.MineInAbyss;
+import dev.sterner.mineinabyss.common.curse.CurseManager;
 import dev.sterner.mineinabyss.common.networking.SyncLivingCapabilityDataPacket;
 import dev.sterner.mineinabyss.registry.MIAPackets;
 import net.minecraft.nbt.CompoundTag;
@@ -23,6 +24,7 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
     });
 
     public MIALivingEntityDataCapability() {
+
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
