@@ -10,12 +10,10 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 @Mod.EventBusSubscriber(modid = MineInAbyss.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MIAPackets {
-    public static final String PROTOCOL_VERSION = "1";
-    public static SimpleChannel MIA_CHANNEL =
-            NetworkRegistry.newSimpleChannel(MineInAbyss.id("main"), () ->
-                    MIAPackets.PROTOCOL_VERSION, MIAPackets.PROTOCOL_VERSION::equals, MIAPackets.PROTOCOL_VERSION::equals);
 
-    @SuppressWarnings("UnusedAssignment")
+    public static final String PROTOCOL_VERSION = "1";
+    public static SimpleChannel MIA_CHANNEL = NetworkRegistry.newSimpleChannel(MineInAbyss.id("main"), () -> MIAPackets.PROTOCOL_VERSION, MIAPackets.PROTOCOL_VERSION::equals, MIAPackets.PROTOCOL_VERSION::equals);
+
     @SubscribeEvent
     public static void registerNetworkStuff(FMLCommonSetupEvent event) {
         int index = 0;

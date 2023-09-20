@@ -1,23 +1,27 @@
 package dev.sterner.mineinabyss;
 
+import dev.sterner.mineinabyss.data.*;
 import dev.sterner.mineinabyss.registry.*;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
+
+import java.util.concurrent.CompletableFuture;
 
 import static dev.sterner.mineinabyss.registry.MIABlockEntityTypes.BLOCK_ENTITY_TYPES;
 import static dev.sterner.mineinabyss.registry.MIABlocks.BLOCKS;
@@ -34,17 +38,19 @@ public class MineInAbyss {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
 
-    public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> MIAItems.EXAMPLE_BLOCK_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(MIAItems.EXAMPLE_BLOCK_ITEM.get());
-            }).build());
+    public static final RegistryObject<CreativeModeTab> MIA_TAB = CREATIVE_MODE_TABS.register(MODID,
+            () -> CreativeModeTab.builder()
+                    .withTabsBefore(CreativeModeTabs.COMBAT)
+                    .title(Component.translatable("itemGroup." + MODID + ".main"))
+                    .icon(() -> MIAItems.STAR_COMPASS.get().getDefaultInstance())
+                    .displayItems((parameters, output) -> {
+                    output.accept(MIAItems.STAR_COMPASS.get());
+            }).build()
+    );
 
     public MineInAbyss() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        modEventBus.addListener(this::commonSetup);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         BLOCKS.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
@@ -52,41 +58,51 @@ public class MineInAbyss {
         ENTITY_TYPES.register(modEventBus);
         MOB_EFFECTS.register(modEventBus);
         PARTICLE_TYPES.register(modEventBus);
-        MIARegistries.CURSE_DEFERRED_REGISTER.register(modEventBus);
-
         CREATIVE_MODE_TABS.register(modEventBus);
+
+        MIARegistries.CURSE_DEFERRED_REGISTER.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(this::addCreative);
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modEventBus.addListener(this::gatherData);
     }
 
     public static ResourceLocation id(String id) {
         return new ResourceLocation(MODID, id);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-
-    }
-
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == EXAMPLE_TAB.getKey()) {
-            event.accept(MIAItems.EXAMPLE_BLOCK_ITEM);
+        if (event.getTabKey() == MIA_TAB.getKey()) {
+            event.accept(MIAItems.STAR_COMPASS);
+            event.accept(MIAItems.THOUSAND_MEN_PINS);
+            event.accept(MIAItems.CRADLE_OF_DESIRE);
         }
     }
 
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
 
-    }
+    public void gatherData(GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        PackOutput output = generator.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> provider = event.getLookupProvider();
+        ExistingFileHelper helper = event.getExistingFileHelper();
 
-    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {
+        MIAItemModelProvider itemProvider = new MIAItemModelProvider(output, helper);
+        MIABlockStateProvider blockStateProvider = new MIABlockStateProvider(output, helper, itemProvider);
+        MIALanguageProvider langProvider = new MIALanguageProvider(output);
+        MIATagProvider.MIAEntityTypes entityTagProvider = new MIATagProvider.MIAEntityTypes(output, provider, helper);
+        MIATagProvider.MIABlocks blockTags = new MIATagProvider.MIABlocks(output, provider, helper);
+        MIATagProvider.MIAItems itemTags = new MIATagProvider.MIAItems(output, provider, blockTags.contentsGetter(), helper);
+        MIALootTableProvider lootTables = new MIALootTableProvider(output);
 
-        }
+        generator.addProvider(event.includeServer(), blockTags);
+        generator.addProvider(event.includeServer(), itemTags);
+        generator.addProvider(event.includeServer(), entityTagProvider);
+        generator.addProvider(event.includeServer(), lootTables);
+
+        generator.addProvider(event.includeClient(), blockStateProvider);
+        generator.addProvider(event.includeClient(), itemProvider);
+        generator.addProvider(event.includeClient(), langProvider);
+
     }
 }
