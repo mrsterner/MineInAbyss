@@ -13,12 +13,13 @@ buildscript {
 }
 
 plugins {
-    id("eclipse")
-    id("idea")
-    id("maven-publish")
-    id("net.minecraftforge.gradle").version("[6.0,6.2)")
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin'
     id("org.parchmentmc.librarian.forgegradle").version("1.+")
-    id("org.spongepowered.mixin")
+    id 'java-library'
 }
 
 version = mod_version
@@ -39,7 +40,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'parchment', version: '2023.06.26-1.20.1'
+    mappings channel: 'parchment', version: '1.19.3-2023.06.25-1.20.1'
     copyIdeResources = true
 
     runs {
@@ -62,7 +63,6 @@ minecraft {
             workingDirectory project.file('run')
 
             property 'forge.enabledGameTestNamespaces', mod_id
-            arg "-mixin.config=" + archivesBaseName + ".mixins.json"
 
             mods {
                 self {
@@ -77,7 +77,6 @@ minecraft {
             property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
 
-            arg "-mixin.config=" + archivesBaseName + ".mixins.json"
 
             mods {
                 self {
@@ -120,8 +119,9 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-
-    implementation fg.deobf ("team.lodestar.lodestone:lodestone:1.20.1-1.4.2")
+    implementation(jarJar(fg.deobf ("team.lodestar.lodestone:lodestone:1.20.1-1.4.9"))) {
+        jarJar.ranged(it, "[1.20.1-1.4.9,)")
+    }
 }
 
 
@@ -150,7 +150,7 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Version'  : project.jar.archiveVersion,
                 'Implementation-Vendor'   : mod_authors,
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "MixinConfigs" :"${project.mod_id}.mixins.json"
+                "MixinConfigs" :"${mod_id}.mixins.json"
         ])
     }
 

@@ -1,6 +1,7 @@
 package dev.sterner.mineinabyss.registry;
 
 import dev.sterner.mineinabyss.MineInAbyss;
+import dev.sterner.mineinabyss.common.item.StarCompassItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -10,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 public interface MIAItems {
     DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MineInAbyss.MODID);
 
-    RegistryObject<Item> STAR_COMPASS = ITEMS.register("star_compass", () -> new Item(settings()));
+    RegistryObject<StarCompassItem> STAR_COMPASS = ITEMS.register("star_compass", () -> new StarCompassItem(settings()));
     RegistryObject<Item> CRADLE_OF_DESIRE = ITEMS.register("cradle_of_desire", () -> new Item(settings()));
     RegistryObject<Item> THOUSAND_MEN_PINS = ITEMS.register("thousand_men_pins", () -> new Item(settings()));
 

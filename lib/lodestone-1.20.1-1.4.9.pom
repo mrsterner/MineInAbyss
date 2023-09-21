@@ -4,5 +4,5 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>team.lodestar.lodestone</groupId>
   <artifactId>lodestone</artifactId>
-  <version>1.20.1-1.4.2</version>
+  <version>1.20.1-1.4.9</version>
 </project>

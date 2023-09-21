@@ -2,7 +2,7 @@
   "required": true,
   "package": "dev.sterner.mineinabyss.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "malum.refmap.json",
+  "refmap": "mineinabyss.refmap.json",
   "mixins": [
   ],
   "client": [
