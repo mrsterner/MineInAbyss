@@ -81,6 +81,7 @@ public class MineInAbyss {
             event.accept(MIAItems.CRADLE_OF_DESIRE);
             event.accept(MIAItems.MARBLE);
             event.accept(MIAItems.FLESH);
+            event.accept(MIAItems.CURSE_WARDING_BOX);
         }
     }
 

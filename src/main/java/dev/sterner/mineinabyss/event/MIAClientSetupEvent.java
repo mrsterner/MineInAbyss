@@ -1,8 +1,11 @@
 package dev.sterner.mineinabyss.event;
 
 import dev.sterner.mineinabyss.client.gui.hud.CurseHudRenderer;
+import dev.sterner.mineinabyss.client.renderer.block.CurseWardingBoxBlockEntityRenderer;
+import dev.sterner.mineinabyss.registry.MIABlockEntityTypes;
 import dev.sterner.mineinabyss.registry.MIAItems;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -26,6 +29,7 @@ public class MIAClientSetupEvent {
                 CurseHudRenderer.renderCurseHud(gui, poseStack, width, height));
 
     }
+
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         ParticleEmitterHandler.registerParticleEmitters(event);
@@ -33,5 +37,10 @@ public class MIAClientSetupEvent {
         var i = MIAItems.STAR_COMPASS.get();
         ParticleEmitterHandler.ItemParticleSupplier emitter = (ParticleEmitterHandler.ItemParticleSupplier) i;
         ParticleEmitterHandler.registerItemParticleEmitter(i, emitter);
+    }
+
+    @SubscribeEvent
+    public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(MIABlockEntityTypes.CURSE_WARDING_BOX.get(), CurseWardingBoxBlockEntityRenderer::new);
     }
 }
