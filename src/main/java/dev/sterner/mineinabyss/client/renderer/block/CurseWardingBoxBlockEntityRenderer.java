@@ -9,4 +9,6 @@ public class CurseWardingBoxBlockEntityRenderer extends GeoBlockRenderer<CurseWa
     public CurseWardingBoxBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
         super(new CurseWardingBoxBlockEntityModel());
     }
+
+    //TODO add item renderer on bone "item"
 }
