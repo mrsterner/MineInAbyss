@@ -43,6 +43,8 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         this(MIABlockEntityTypes.CURSE_WARDING_BOX.get(), STRUCTURE.get(), pos, state);
     }
 
+    //TODO add itemEntity and mobEntity storage
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, state -> {

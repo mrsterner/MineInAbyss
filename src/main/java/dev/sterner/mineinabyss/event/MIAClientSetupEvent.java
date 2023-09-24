@@ -3,21 +3,14 @@ package dev.sterner.mineinabyss.event;
 import dev.sterner.mineinabyss.client.gui.hud.CurseHudRenderer;
 import dev.sterner.mineinabyss.client.renderer.block.CurseWardingBoxBlockEntityRenderer;
 import dev.sterner.mineinabyss.registry.MIABlockEntityTypes;
-import dev.sterner.mineinabyss.registry.MIAItems;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import team.lodestar.lodestone.handlers.RenderHandler;
-import team.lodestar.lodestone.handlers.ThrowawayBlockDataHandler;
-import team.lodestar.lodestone.handlers.screenparticle.ParticleEmitterHandler;
-import team.lodestar.lodestone.setup.LodestoneParticleRegistry;
-import team.lodestar.lodestone.setup.LodestoneScreenParticleRegistry;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MIAClientSetupEvent {
@@ -32,15 +25,15 @@ public class MIAClientSetupEvent {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        ParticleEmitterHandler.registerParticleEmitters(event);
-
-        var i = MIAItems.STAR_COMPASS.get();
-        ParticleEmitterHandler.ItemParticleSupplier emitter = (ParticleEmitterHandler.ItemParticleSupplier) i;
-        ParticleEmitterHandler.registerItemParticleEmitter(i, emitter);
     }
 
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(MIABlockEntityTypes.CURSE_WARDING_BOX.get(), CurseWardingBoxBlockEntityRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerRenderers(final EntityRenderersEvent.AddLayers event) {
+
     }
 }
