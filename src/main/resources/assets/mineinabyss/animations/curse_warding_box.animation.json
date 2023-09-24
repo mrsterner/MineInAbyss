@@ -438,7 +438,7 @@
 							"vector": [0, 0, 0]
 						},
 						"2.0": {
-							"vector": [9, 0, -5],
+							"vector": [7, -0.5, -5],
 							"easing": "easeInOutQuad"
 						}
 					}
@@ -805,6 +805,9 @@
 				"core": {
 					"rotation": {
 						"vector": [-22.5, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
 					}
 				},
 				"1x15": {
