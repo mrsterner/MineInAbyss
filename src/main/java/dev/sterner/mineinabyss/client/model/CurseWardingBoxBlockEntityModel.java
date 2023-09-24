@@ -7,8 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class CurseWardingBoxBlockEntityModel extends GeoModel<CurseWardingBoxBlockEntity> {
 
-    private static final ResourceLocation MODEL = new ResourceLocation(MineInAbyss.MODID, "geo/curse_warding_box.geo.json");
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MineInAbyss.MODID, "textures/block/curse_warding_box.png");
+    private static final ResourceLocation MODEL = new ResourceLocation(MineInAbyss.MODID, "geo/curse_warding_box_fix.geo.json");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MineInAbyss.MODID, "textures/block/curse_warding_box_outline.png");
     private static final ResourceLocation ANIMATION = new ResourceLocation(MineInAbyss.MODID, "animations/curse_warding_box.animation.json");
 
     @Override
