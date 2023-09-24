@@ -3,37 +3,47 @@ package dev.sterner.mineinabyss.common.block;
 import dev.sterner.mineinabyss.registry.MIABlockEntityTypes;
 import dev.sterner.mineinabyss.registry.MIABlocks;
 import mod.azure.azurelib.animatable.GeoBlockEntity;
-import mod.azure.azurelib.constant.DefaultAnimations;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
 import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import team.lodestar.lodestone.systems.multiblock.MultiBlockCoreEntity;
 import team.lodestar.lodestone.systems.multiblock.MultiBlockStructure;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements GeoBlockEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public static final Supplier<MultiBlockStructure> STRUCTURE = () ->
-            (MultiBlockStructure.of(
-                    new MultiBlockStructure.StructurePiece(1, 0, 0, MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState()),
-                    new MultiBlockStructure.StructurePiece(1, 0, 1, MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState()),
-                    new MultiBlockStructure.StructurePiece(0, 0, 1, MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState()),
-                    new MultiBlockStructure.StructurePiece(1, 1, 0, MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState()),
-                    new MultiBlockStructure.StructurePiece(1, 1, 1, MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState()),
-                    new MultiBlockStructure.StructurePiece(0, 1, 1, MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState()),
-                    new MultiBlockStructure.StructurePiece(0, 1, 0, MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState())
-                    ));
+            MultiBlockStructure.of(genStruct(MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState())
+                    .toArray(MultiBlockStructure.StructurePiece[]::new));
 
+    public static List<MultiBlockStructure.StructurePiece> genStruct(BlockState state){
+        List<MultiBlockStructure.StructurePiece> list = new ArrayList<>();
+
+        for (int x = 0; x <= 1; x++) {
+            for (int y = 0; y <= 1; y++) {
+                for (int z = 0; z <= 1; z++) {
+                    list.add(new MultiBlockStructure.StructurePiece(x, y ,z, state));
+                }
+            }
+        }
+
+        return list;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        return super.getRenderBoundingBox().inflate(2);
+    }
 
     public CurseWardingBoxBlockEntity(BlockEntityType<?> type, MultiBlockStructure structure, BlockPos pos, BlockState state) {
         super(type, structure, pos, state);
