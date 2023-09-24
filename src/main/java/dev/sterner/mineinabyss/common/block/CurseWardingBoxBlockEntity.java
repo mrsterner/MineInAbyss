@@ -3,8 +3,11 @@ package dev.sterner.mineinabyss.common.block;
 import dev.sterner.mineinabyss.registry.MIABlockEntityTypes;
 import dev.sterner.mineinabyss.registry.MIABlocks;
 import mod.azure.azurelib.animatable.GeoBlockEntity;
+import mod.azure.azurelib.constant.DefaultAnimations;
 import mod.azure.azurelib.core.animatable.instance.AnimatableInstanceCache;
 import mod.azure.azurelib.core.animation.AnimatableManager;
+import mod.azure.azurelib.core.animation.AnimationController;
+import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.ChestBlock;
@@ -18,6 +21,7 @@ import team.lodestar.lodestone.systems.multiblock.MultiBlockStructure;
 import java.util.function.Supplier;
 
 public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements GeoBlockEntity {
+    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public static final Supplier<MultiBlockStructure> STRUCTURE = () ->
             (MultiBlockStructure.of(
@@ -39,11 +43,16 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         this(MIABlockEntityTypes.CURSE_WARDING_BOX.get(), STRUCTURE.get(), pos, state);
     }
 
-    private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
-
     @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, state -> {
+            if (getLevel().getDayTime() > 23000 || getLevel().getDayTime() < 13000) {
+                return state.setAndContinue(RawAnimation.begin().thenPlay("opening"));
+            }
+            else {
+                return state.setAndContinue(RawAnimation.begin().thenPlay("closed"));
+            }
+        }));
     }
 
     @Override
