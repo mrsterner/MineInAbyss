@@ -11,7 +11,6 @@ import team.lodestar.lodestone.systems.particle.data.ColorParticleData;
 import team.lodestar.lodestone.systems.particle.data.GenericParticleData;
 import team.lodestar.lodestone.systems.particle.data.SpinParticleData;
 import team.lodestar.lodestone.systems.particle.screen.ScreenParticleHolder;
-import team.lodestar.lodestone.systems.particle.screen.ScreenParticleType;
 
 import java.awt.*;
 

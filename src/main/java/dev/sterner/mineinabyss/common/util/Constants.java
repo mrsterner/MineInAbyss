@@ -16,5 +16,8 @@ public class Constants {
         String TIME_Y = "TimeY";
         String TIME_AGE = "TimeAge";
         String ABYSS = "Abyss";
+        String ITEM = "Item";
+        String ENTITY = "Entity";
+        String OPEN = "Open";
     }
 }

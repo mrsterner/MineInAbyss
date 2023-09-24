@@ -19,19 +19,19 @@ public class CurseWardingBoxBlockEntityRenderer extends GeoBlockRenderer<CurseWa
         switch (facing) {
             case SOUTH:
                 poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-                poseStack.translate(-1,0,-1);
+                poseStack.translate(-1, 0, -1);
                 break;
             case WEST:
                 poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
-                poseStack.translate(-1,0,0);
+                poseStack.translate(-1, 0, 0);
                 break;
             case NORTH:
                 poseStack.mulPose(Axis.YP.rotationDegrees(0.0F));
-                poseStack.translate(0,0,0);
+                poseStack.translate(0, 0, 0);
                 break;
             case EAST:
                 poseStack.mulPose(Axis.YP.rotationDegrees(270.0F));
-                poseStack.translate(0,0,-1);
+                poseStack.translate(0, 0, -1);
                 break;
             default:
                 break;

@@ -30,7 +30,6 @@ public interface MIAItems {
             );
 
 
-
     private static Item.Properties settings() {
         return new Item.Properties();
     }
