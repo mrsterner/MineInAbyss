@@ -23,12 +23,10 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public static final Supplier<MultiBlockStructure> STRUCTURE = () ->
-            MultiBlockStructure.of(genStruct(MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState())
+            MultiBlockStructure.of(genStruct(MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState(), new ArrayList<>())
                     .toArray(MultiBlockStructure.StructurePiece[]::new));
 
-    public static List<MultiBlockStructure.StructurePiece> genStruct(BlockState state){
-        List<MultiBlockStructure.StructurePiece> list = new ArrayList<>();
-
+    public static List<MultiBlockStructure.StructurePiece> genStruct(BlockState state, List<MultiBlockStructure.StructurePiece> list){
         for (int x = 0; x <= 1; x++) {
             for (int y = 0; y <= 1; y++) {
                 for (int z = 0; z <= 1; z++) {
