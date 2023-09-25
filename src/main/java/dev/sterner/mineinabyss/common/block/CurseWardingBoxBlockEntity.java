@@ -1,6 +1,7 @@
 package dev.sterner.mineinabyss.common.block;
 
 import dev.sterner.mineinabyss.common.util.Constants;
+import dev.sterner.mineinabyss.core.listener.MeatToEntityDataReloadListener;
 import dev.sterner.mineinabyss.registry.MIABlockEntityTypes;
 import dev.sterner.mineinabyss.registry.MIABlocks;
 import mod.azure.azurelib.animatable.GeoBlockEntity;
@@ -12,7 +13,10 @@ import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,7 +26,9 @@ import team.lodestar.lodestone.systems.multiblock.MultiBlockCoreEntity;
 import team.lodestar.lodestone.systems.multiblock.MultiBlockStructure;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements GeoBlockEntity {
@@ -46,6 +52,16 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         }
 
         return list;
+    }
+
+    @Override
+    public InteractionResult onUse(Player player, InteractionHand hand) {
+        for (Map.Entry<ResourceLocation, MeatToEntityDataReloadListener.MeatData> i : MeatToEntityDataReloadListener.MEAT_DATA.entrySet()) {
+            System.out.println(i.getKey());
+            System.out.println(i.getValue().items.stream().toList());
+        }
+
+        return super.onUse(player, hand);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package dev.sterner.mineinabyss.event;
+package dev.sterner.mineinabyss.core.event;
 
 import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.capability.MIAWorldDataCapability;

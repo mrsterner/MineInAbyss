@@ -1,4 +1,4 @@
-package dev.sterner.mineinabyss.event;
+package dev.sterner.mineinabyss.core.event;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
