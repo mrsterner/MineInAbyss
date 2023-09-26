@@ -15,8 +15,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,8 +39,10 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     private ItemStack itemStack = ItemStack.EMPTY;
+    @Deprecated
     private EntityType<?> entityType;
     private boolean isOpen = false;
+    private int progress = 0;
 
     public static final Supplier<MultiBlockStructure> STRUCTURE = () ->
             MultiBlockStructure.of(genStruct(MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState(), new ArrayList<>())
@@ -52,6 +58,29 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         }
 
         return list;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!itemStack.isEmpty()) {
+            progress++;
+            if (progress > 20 * 10) {//TODO not hardcode this
+
+                EntityType<?> entityType = MeatToEntityDataReloadListener.getEntity(itemStack.getItem());
+                if (entityType != null && getLevel() != null) {
+                    Entity entity = entityType.create(getLevel());
+                    if (entity != null) {
+                        entity.setPos(getBlockPos().getCenter().add(0,2,0));
+                        getLevel().addFreshEntity(entity);
+                    }
+                }
+
+                itemStack = ItemStack.EMPTY;
+                progress = 0;
+            }
+        }
+
     }
 
     @Override

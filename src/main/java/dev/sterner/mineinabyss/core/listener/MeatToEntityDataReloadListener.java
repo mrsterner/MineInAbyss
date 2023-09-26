@@ -7,11 +7,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -27,6 +31,20 @@ public class MeatToEntityDataReloadListener extends SimpleJsonResourceReloadList
 
     public static void register(AddReloadListenerEvent event) {
         event.addListener(new MeatToEntityDataReloadListener());
+    }
+
+    @Nullable
+    public static EntityType<?> getEntity(Item item){
+        EntityType<?> out = null;
+
+        for (Map.Entry<ResourceLocation, MeatData> meatDataEntry : MEAT_DATA.entrySet()) {
+            NonNullList<Item> meatList = meatDataEntry.getValue().items;
+            if (meatList.contains(item)) {
+                ResourceLocation resourceLocation = meatDataEntry.getKey();
+                out = ForgeRegistries.ENTITY_TYPES.getValue(resourceLocation);
+            }
+        }
+        return out;
     }
 
     @Override
