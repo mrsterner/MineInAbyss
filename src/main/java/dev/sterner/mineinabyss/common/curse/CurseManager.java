@@ -26,7 +26,7 @@ public class CurseManager {
 
     }
 
-    public static void tickServer(LivingEvent.LivingTickEvent event) {
+    public static void tick(LivingEvent.LivingTickEvent event) {
         LivingEntity livingEntity = event.getEntity();
 
         if (!(livingEntity instanceof Player)) {

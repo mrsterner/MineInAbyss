@@ -19,5 +19,7 @@ public class Constants {
         String ITEM = "Item";
         String ENTITY = "Entity";
         String OPEN = "Open";
+        String IS_REVIVED = "IsRevived";
+        String REVIVED_TIMER = "RevivedTimer";
     }
 }

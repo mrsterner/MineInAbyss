@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -28,11 +29,17 @@ public class MIARuntimeEvents {
 
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
-        CurseManager.tickServer(event);
+        CurseManager.tick(event);
+        MIALivingEntityDataCapability.tick(event);
     }
 
     @SubscribeEvent
     public static void registerListeners(AddReloadListenerEvent event) {
         MeatToEntityDataReloadListener.register(event);
+    }
+
+    @SubscribeEvent
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
+        MIALivingEntityDataCapability.syncEntityCapability(event);
     }
 }
