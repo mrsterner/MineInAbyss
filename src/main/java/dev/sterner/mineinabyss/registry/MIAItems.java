@@ -16,6 +16,7 @@ public interface MIAItems {
     RegistryObject<StarCompassItem> STAR_COMPASS = ITEMS.register("star_compass", () -> new StarCompassItem(settings()));
     RegistryObject<Item> CRADLE_OF_DESIRE = ITEMS.register("cradle_of_desire", () -> new Item(settings()));
     RegistryObject<Item> THOUSAND_MEN_PINS = ITEMS.register("thousand_men_pins", () -> new Item(settings()));
+    RegistryObject<Item> LIFE_REVERBERATING_STONE = ITEMS.register("life_reverberating_stone", () -> new Item(settings()));
 
 
     RegistryObject<Item> FLESH = ITEMS.register("flesh", () -> new BlockItem(MIABlocks.FLESH.get(), settings()));

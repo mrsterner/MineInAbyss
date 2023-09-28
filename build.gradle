@@ -122,8 +122,8 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation(jarJar(fg.deobf ("team.lodestar.lodestone:lodestone:1.20.1-1.4.11"))) {
-        jarJar.ranged(it, "[1.20.1-1.4.10,)")
+    implementation(jarJar(fg.deobf ("team.lodestar.lodestone:lodestone:1.20.1-1.4.13"))) {
+        jarJar.ranged(it, "[1.20.1-1.4.13,)")
     }
 
     implementation fg.deobf("mod.azure.azurelib:azurelib-forge-1.20.1:1.0.29")

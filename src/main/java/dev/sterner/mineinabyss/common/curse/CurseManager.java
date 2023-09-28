@@ -1,5 +1,6 @@
 package dev.sterner.mineinabyss.common.curse;
 
+import dev.sterner.mineinabyss.MineInAbyss;
 import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.common.util.Constants;
 import dev.sterner.mineinabyss.common.util.CurseUtils;
@@ -30,7 +31,7 @@ public class CurseManager {
         LivingEntity livingEntity = event.getEntity();
 
         if (!(livingEntity instanceof Player)) {
-            return;//TODO remove replace with humanoid
+            return;//TODO remove Player and replace with humanoid
         }
 
         LazyOptional<MIALivingEntityDataCapability> capabilityOptional = MIALivingEntityDataCapability.getCapabilityOptional(livingEntity);
@@ -66,7 +67,7 @@ public class CurseManager {
 
     private void tryUpdateCurseIntensity(LivingEntity livingEntity) {
         Curse worldCurse = CurseUtils.getWorldCurse(livingEntity.level(), livingEntity.blockPosition());
-        if (worldCurse != getCurse() && getCurse().getIntensity().getId() < worldCurse.getIntensity().getId()) {
+        if (getCurse() != null && worldCurse != getCurse() && getCurse().getIntensity().getId() < worldCurse.getIntensity().getId()) {
             setCurse(worldCurse);
         }
     }
@@ -88,7 +89,7 @@ public class CurseManager {
         nbt.putBoolean(Constants.Nbt.IS_IN_CURSE, manager.isInCurse);
 
         if (manager.curse != null) {
-            nbt.putString(Constants.Nbt.CURSE_INTENSITY, MIARegistries.CURSE_REGISTRY.get().getDelegateOrThrow(manager.curse).get().toString());
+            nbt.putString(Constants.Nbt.CURSE, MIARegistries.CURSE_REGISTRY.get().getKey(manager.curse).toString());
         }
 
         if (manager.timeSpentOnY != null) {
@@ -103,8 +104,10 @@ public class CurseManager {
         manager.currentY = nbt.getInt(Constants.Nbt.CURRENT_Y);
         manager.isImmune = nbt.getBoolean(Constants.Nbt.IMMUNE);
         manager.isInCurse = nbt.getBoolean(Constants.Nbt.IS_IN_CURSE);
-        manager.curse = MIARegistries.CURSE_REGISTRY.get().getDelegateOrThrow(new ResourceLocation(nbt.getString(Constants.Nbt.CURSE))).get();
-
+        Curse curse = MIARegistries.CURSE_REGISTRY.get().getValue(new ResourceLocation(nbt.getString(Constants.Nbt.CURSE)));
+        if (curse != null) {
+            manager.curse = curse;
+        }
         return manager;
     }
 
