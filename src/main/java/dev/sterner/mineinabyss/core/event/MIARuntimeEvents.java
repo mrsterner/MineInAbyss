@@ -8,6 +8,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,5 +43,10 @@ public class MIARuntimeEvents {
     @SubscribeEvent
     public static void onStartTracking(PlayerEvent.StartTracking event) {
         MIALivingEntityDataCapability.syncEntityCapability(event);
+    }
+
+    @SubscribeEvent
+    public static void dropEvent(LivingDropsEvent livingDropsEvent){
+        MIALivingEntityDataCapability.onDeath(livingDropsEvent);
     }
 }

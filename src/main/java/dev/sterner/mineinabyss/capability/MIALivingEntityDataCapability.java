@@ -16,6 +16,8 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.network.PacketDistributor;
@@ -63,7 +65,7 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
     }
 
     /**
-     * removed or resets the revived status, not killing the entity in the process
+     * removes or resets the revived status, not killing the entity in the process
      *
      * @param livingEntity entity to remove status from
      */
@@ -71,6 +73,9 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
         MIALivingEntityDataCapability capability = getCapability(livingEntity);
         capability.isRevived = false;
         capability.revivedTimer = -1;
+        if (livingEntity.level() instanceof ServerLevel) {
+            sync(livingEntity);
+        }
     }
 
     public static void tick(LivingEvent.LivingTickEvent event) {
@@ -82,13 +87,20 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
                     capability.revivedTimer--;
                 } else {
                     //TODO change to curse damage type
-                    removeRevived(livingEntity);
                     livingEntity.hurt(livingEntity.damageSources().magic(), Float.MAX_VALUE);
                 }
                 if (livingEntity.level() instanceof ServerLevel) {
                     sync(livingEntity);
                 }
             }
+        }
+    }
+
+    public static void onDeath(LivingDropsEvent livingDropsEvent) {
+        LivingEntity livingEntity = livingDropsEvent.getEntity();
+        MIALivingEntityDataCapability capability = MIALivingEntityDataCapability.getCapability(livingEntity);
+        if (capability.isRevived) {
+            livingDropsEvent.getDrops().clear();
         }
     }
 
