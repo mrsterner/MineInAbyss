@@ -1,5 +1,6 @@
 package dev.sterner.mineinabyss.common.block;
 
+import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.common.util.Constants;
 import dev.sterner.mineinabyss.core.listener.MeatToEntityDataReloadListener;
 import dev.sterner.mineinabyss.registry.MIABlockEntityTypes;
@@ -11,6 +12,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,9 +26,12 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.registries.ForgeRegistries;
 import team.lodestar.lodestone.systems.multiblock.MultiBlockCoreEntity;
 import team.lodestar.lodestone.systems.multiblock.MultiBlockStructure;
@@ -41,8 +46,9 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
     public Item item = null;
-    private boolean isOpen = false;
-    private int progress = 0;
+    private boolean isOpening = false;
+    private int openingTimer = 20 * 2;
+    private long progress = 0;
 
     public static final Supplier<MultiBlockStructure> STRUCTURE = () ->
             MultiBlockStructure.of(genStruct(MIABlocks.CURSE_WARDING_BOX_COMPONENT.get().defaultBlockState(), new ArrayList<>())
@@ -63,24 +69,53 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     @Override
     public void tick() {
         super.tick();
-        if (item != null) {
+        if (item != null && !isOpen()) {
             progress++;
-            if (progress > 20 * 10) {//TODO not hardcode this
-
-                EntityType<?> entityType = MeatToEntityDataReloadListener.getEntity(item);
-                if (entityType != null && getLevel() != null) {
-                    Entity entity = entityType.create(getLevel());
-                    if (entity != null) {
-                        entity.setPos(getBlockPos().getCenter().add(0,2,0));
-                        getLevel().addFreshEntity(entity);
-                    }
-                }
-
-                item = null;
-                progress = 0;
-            }
+            setChanged();
         }
 
+        if (isOpening && openingTimer > 0) {
+            openingTimer--;
+            setChanged();
+        }
+
+        if (isOpen() && progress > 20 * 10) {
+            Direction direction = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
+            Vec3 offset = switch (direction){
+                case EAST -> new Vec3(2,1,0.5);
+                case WEST -> new Vec3(-1,1,0.5);
+                case NORTH -> new Vec3(0.5,1,-1);
+                default -> new Vec3(0.5,1,2);
+            };
+
+            spawnEntity(level, getBlockPos().getCenter().add(offset));
+        }
+
+    }
+
+    public void changeState(){
+        isOpening = !isOpen();
+        openingTimer = 20 * 2;
+        setChanged();
+    }
+
+    public boolean spawnEntity(Level level, Vec3 spawnPos){
+        boolean bl = false;
+        EntityType<?> entityType = MeatToEntityDataReloadListener.getEntity(item);
+        if (entityType != null && getLevel() != null) {
+            Entity entity = entityType.create(getLevel());
+            if (entity instanceof LivingEntity livingEntity) {
+                livingEntity.setPos(spawnPos);//TODO rotate and place in front
+
+                MIALivingEntityDataCapability.setRevived(livingEntity, progress);
+                level.addFreshEntity(livingEntity);
+                bl = true;
+            }
+        }
+        item = null;
+        progress = 0;
+        setChanged();
+        return bl;
     }
 
     @Override
@@ -110,7 +145,8 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     public void load(CompoundTag pTag) {
         super.load(pTag);
 
-        pTag.putBoolean(Constants.Nbt.OPEN, this.isOpen);
+        pTag.putBoolean(Constants.Nbt.OPEN, this.isOpening);
+        pTag.putInt(Constants.Nbt.OPENING_TIMER, this.openingTimer);
 
         if (item != null) {
             pTag.put(Constants.Nbt.ITEM, this.item.getDefaultInstance().save(new CompoundTag()));
@@ -121,12 +157,17 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
 
-        this.isOpen = pTag.getBoolean(Constants.Nbt.OPEN);
+        this.isOpening = pTag.getBoolean(Constants.Nbt.OPEN);
+        this.openingTimer = pTag.getInt(Constants.Nbt.OPENING_TIMER);
 
         CompoundTag itemTag = pTag.getCompound(Constants.Nbt.ITEM);
         if (!itemTag.isEmpty()) {
             this.item = ItemStack.of(itemTag).getItem();
         }
+    }
+
+    public boolean isOpen(){
+        return isOpening && openingTimer == 0;
     }
 
     @Override
@@ -145,7 +186,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, state -> {
-            if (this.item == null) {
+            if (this.isOpening) {
                 return state.setAndContinue(RawAnimation.begin().thenPlay("opening"));
             } else {
                 return state.setAndContinue(RawAnimation.begin().thenPlay("closing"));

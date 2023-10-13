@@ -27,7 +27,7 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
     public CurseManager manager = new CurseManager();
 
     public boolean isRevived = false;
-    public int revivedTimer = -1;
+    public long revivedTimer = -1;
 
     public static Capability<MIALivingEntityDataCapability> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
     });
@@ -53,11 +53,13 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
      * @param livingEntity revived entity
      * @param time time in ticks the mob will stay alive
      */
-    public static void setRevived(LivingEntity livingEntity, int time){
+    public static void setRevived(LivingEntity livingEntity, long time){
         MIALivingEntityDataCapability capability = getCapability(livingEntity);
         capability.isRevived = true;
         capability.revivedTimer = time;
-        sync(livingEntity);
+        if (livingEntity.level() instanceof ServerLevel) {
+            sync(livingEntity);
+        }
     }
 
     /**
@@ -83,7 +85,9 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
                     removeRevived(livingEntity);
                     livingEntity.hurt(livingEntity.damageSources().magic(), Float.MAX_VALUE);
                 }
-                sync(livingEntity);
+                if (livingEntity.level() instanceof ServerLevel) {
+                    sync(livingEntity);
+                }
             }
         }
     }
@@ -92,7 +96,7 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(Constants.Nbt.IS_REVIVED, this.isRevived);
-        tag.putInt(Constants.Nbt.REVIVED_TIMER, this.revivedTimer);
+        tag.putLong(Constants.Nbt.REVIVED_TIMER, this.revivedTimer);
 
         manager.writeCurseToNbt(manager, tag);
 
