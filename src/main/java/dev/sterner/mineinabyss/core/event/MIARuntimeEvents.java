@@ -4,6 +4,7 @@ import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.capability.MIAWorldDataCapability;
 import dev.sterner.mineinabyss.common.cradle.CradleManager;
 import dev.sterner.mineinabyss.common.curse.CurseManager;
+import dev.sterner.mineinabyss.compat.terrablender.MIARegion;
 import dev.sterner.mineinabyss.core.listener.MeatToEntityDataReloadListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -14,6 +15,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 
 
 @Mod.EventBusSubscriber
@@ -49,5 +51,24 @@ public class MIARuntimeEvents {
     @SubscribeEvent
     public static void dropEvent(LivingDropsEvent livingDropsEvent) {
         MIALivingEntityDataCapability.onDeath(livingDropsEvent);
+    }
+
+    @SubscribeEvent
+    public void onParallelDispatched(ParallelDispatchEvent event) {
+        event.enqueueWork(() -> {
+            try {
+                Class<?> aClass = Class.forName("terrablender.api.Region");
+                if (aClass != null) {
+                    try {
+                        Class<?> clazz = Class.forName("dev.sterner.mineinabyss.compat.terrablender.MIARegion");
+                        ((MIARegion) clazz.getConstructor().newInstance()).init(event);
+                    } catch (ReflectiveOperationException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

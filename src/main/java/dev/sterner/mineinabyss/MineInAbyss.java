@@ -100,6 +100,7 @@ public class MineInAbyss {
         MIATagProvider.MIABlocks blockTags = new MIATagProvider.MIABlocks(output, provider, helper);
         MIATagProvider.MIAItems itemTags = new MIATagProvider.MIAItems(output, provider, blockTags.contentsGetter(), helper);
         MIALootTableProvider lootTables = new MIALootTableProvider(output);
+        MIABiomeProvider biomeProvider = new MIABiomeProvider(output, provider);
 
         generator.addProvider(event.includeServer(), blockTags);
         generator.addProvider(event.includeServer(), itemTags);
@@ -109,6 +110,7 @@ public class MineInAbyss {
         generator.addProvider(event.includeClient(), blockStateProvider);
         generator.addProvider(event.includeClient(), itemProvider);
         generator.addProvider(event.includeClient(), langProvider);
+        generator.addProvider(event.includeServer(), biomeProvider);
 
     }
 }
