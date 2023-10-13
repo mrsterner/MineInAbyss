@@ -56,9 +56,9 @@ public class CurseManager {
 
                 //Client
                 if (livingEntity.level() instanceof ClientLevel clientWorld) {
-                    manager.curse.tickClientEffect(clientWorld);
+                    manager.curse.tickClientEffect(clientWorld, livingEntity);
                     if (CurseUtils.checkAscending(manager, livingEntity)) {
-                        manager.curse.tickAscensionEffectClient(clientWorld);
+                        manager.curse.tickAscensionEffectClient(clientWorld, livingEntity);
                     }
                 }
             }

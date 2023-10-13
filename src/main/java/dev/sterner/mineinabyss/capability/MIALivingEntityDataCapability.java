@@ -4,6 +4,7 @@ import dev.sterner.mineinabyss.MineInAbyss;
 import dev.sterner.mineinabyss.common.curse.CurseManager;
 import dev.sterner.mineinabyss.common.networking.SyncLivingCapabilityDataPacket;
 import dev.sterner.mineinabyss.common.util.Constants;
+import dev.sterner.mineinabyss.registry.MIADamageSources;
 import dev.sterner.mineinabyss.registry.MIAPackets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -86,8 +87,7 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
                 if (capability.revivedTimer > 0) {
                     capability.revivedTimer--;
                 } else {
-                    //TODO change to curse damage type
-                    livingEntity.hurt(livingEntity.damageSources().magic(), Float.MAX_VALUE);
+                    livingEntity.hurt(MIADamageSources.create(livingEntity.level(), MIADamageSources.CURSE), Float.MAX_VALUE);
                 }
                 if (livingEntity.level() instanceof ServerLevel) {
                     sync(livingEntity);

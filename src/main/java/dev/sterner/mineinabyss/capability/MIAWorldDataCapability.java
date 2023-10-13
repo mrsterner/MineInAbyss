@@ -2,10 +2,14 @@ package dev.sterner.mineinabyss.capability;
 
 import dev.sterner.mineinabyss.MineInAbyss;
 import dev.sterner.mineinabyss.common.abyss.Abyss;
+import dev.sterner.mineinabyss.common.networking.SyncLevelCapabilityPacket;
+import dev.sterner.mineinabyss.common.networking.SyncLivingCapabilityDataPacket;
 import dev.sterner.mineinabyss.common.util.Constants;
+import dev.sterner.mineinabyss.registry.MIAPackets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -13,6 +17,7 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.network.PacketDistributor;
 import team.lodestar.lodestone.systems.capability.LodestoneCapability;
 import team.lodestar.lodestone.systems.capability.LodestoneCapabilityProvider;
 
@@ -29,9 +34,9 @@ public class MIAWorldDataCapability implements LodestoneCapability {
     public MIAWorldDataCapability() {
     }
 
-    public void addAbyss(Abyss abyss) {
+    public void addAbyss(Level level, Abyss abyss) {
         abyssList.add(abyss);
-        //TODO sync?
+        sync(level);
     }
 
 
@@ -77,4 +82,9 @@ public class MIAWorldDataCapability implements LodestoneCapability {
         return level.getCapability(CAPABILITY);
     }
 
+    public static void sync(Level level) {
+        getCapabilityOptional(level).ifPresent(
+                c -> MIAPackets.MIA_CHANNEL.send(PacketDistributor.DIMENSION.with(level::dimension),
+                        new SyncLevelCapabilityPacket(c.serializeNBT())));
+    }
 }

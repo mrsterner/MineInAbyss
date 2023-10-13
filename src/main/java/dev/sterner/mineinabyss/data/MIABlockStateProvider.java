@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import team.lodestar.lodestone.systems.datagen.BlockStateSmithTypes;
+import team.lodestar.lodestone.systems.datagen.ItemModelSmithTypes;
 import team.lodestar.lodestone.systems.datagen.providers.LodestoneBlockStateProvider;
 import team.lodestar.lodestone.systems.datagen.providers.LodestoneItemModelProvider;
 import team.lodestar.lodestone.systems.datagen.statesmith.AbstractBlockStateSmith;
@@ -15,8 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static dev.sterner.mineinabyss.registry.MIABlocks.FLESH;
-import static dev.sterner.mineinabyss.registry.MIABlocks.MARBLE;
+import static dev.sterner.mineinabyss.registry.MIABlocks.*;
 
 public class MIABlockStateProvider extends LodestoneBlockStateProvider {
     public MIABlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper, LodestoneItemModelProvider itemModelProvider) {

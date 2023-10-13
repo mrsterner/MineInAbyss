@@ -15,19 +15,19 @@ public class Curse {
         return intensity;
     }
 
-    public void tickEffect(Level world, LivingEntity livingEntity) {
+    public void tickEffect(Level level, LivingEntity livingEntity) {
 
     }
 
-    public void tickClientEffect(ClientLevel clientWorld) {
+    public void tickClientEffect(ClientLevel clientLevel, LivingEntity livingEntity) {
 
     }
 
-    public void tickAscensionEffectClient(ClientLevel clientWorld) {
+    public void tickAscensionEffectClient(ClientLevel clientLevel, LivingEntity livingEntity) {
 
     }
 
-    public void tickAscensionEffect(Level world, LivingEntity livingEntity) {
+    public void tickAscensionEffect(Level level, LivingEntity livingEntity) {
 
     }
 }

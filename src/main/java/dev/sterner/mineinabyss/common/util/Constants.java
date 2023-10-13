@@ -22,5 +22,6 @@ public class Constants {
         String IS_REVIVED = "IsRevived";
         String REVIVED_TIMER = "RevivedTimer";
         String OPENING_TIMER = "OpeningTimer";
+        String CLOSING = "Closing";
     }
 }

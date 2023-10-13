@@ -1,6 +1,7 @@
 package dev.sterner.mineinabyss.registry;
 
 import dev.sterner.mineinabyss.MineInAbyss;
+import dev.sterner.mineinabyss.common.networking.SyncLevelCapabilityPacket;
 import dev.sterner.mineinabyss.common.networking.SyncLivingCapabilityDataPacket;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,5 +20,6 @@ public class MIAPackets {
         int index = 0;
 
         SyncLivingCapabilityDataPacket.register(MIA_CHANNEL, index++);
+        SyncLevelCapabilityPacket.register(MIA_CHANNEL, index++);
     }
 }

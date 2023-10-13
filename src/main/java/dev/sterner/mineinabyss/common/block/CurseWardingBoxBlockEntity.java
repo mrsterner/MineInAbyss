@@ -47,6 +47,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
 
     public Item item = null;
     private boolean isOpening = false;
+    private boolean isClosing = false;
     private int openingTimer = 20 * 2;
     private long progress = 0;
 
@@ -94,7 +95,9 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     }
 
     public void changeState(){
+        isClosing = isOpen();
         isOpening = !isOpen();
+
         openingTimer = 20 * 2;
         setChanged();
     }
@@ -146,6 +149,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         super.load(pTag);
 
         pTag.putBoolean(Constants.Nbt.OPEN, this.isOpening);
+        pTag.putBoolean(Constants.Nbt.CLOSING, this.isClosing);
         pTag.putInt(Constants.Nbt.OPENING_TIMER, this.openingTimer);
 
         if (item != null) {
@@ -158,6 +162,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         super.saveAdditional(pTag);
 
         this.isOpening = pTag.getBoolean(Constants.Nbt.OPEN);
+        this.isClosing = pTag.getBoolean(Constants.Nbt.CLOSING);
         this.openingTimer = pTag.getInt(Constants.Nbt.OPENING_TIMER);
 
         CompoundTag itemTag = pTag.getCompound(Constants.Nbt.ITEM);
@@ -186,11 +191,14 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, state -> {
-            if (this.isOpening) {
+
+            if (this.isOpening && !this.isClosing) {
                 return state.setAndContinue(RawAnimation.begin().thenPlay("opening"));
-            } else {
+            } else if (this.isClosing){
                 return state.setAndContinue(RawAnimation.begin().thenPlay("closing"));
             }
+
+            return state.setAndContinue(RawAnimation.begin().thenPlay("closed"));
         }));
     }
 

@@ -61,6 +61,6 @@ public class LifeReverberatingStoneItem extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.BLOCK;
+        return UseAnim.TOOT_HORN;
     }
 }
