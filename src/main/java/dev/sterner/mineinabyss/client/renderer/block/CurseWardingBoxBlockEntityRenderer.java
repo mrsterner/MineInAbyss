@@ -29,6 +29,14 @@ public class CurseWardingBoxBlockEntityRenderer extends GeoBlockRenderer<CurseWa
                     return null;
                 }
             }
+
+            @Override
+            protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, CurseWardingBoxBlockEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
+                poseStack.pushPose();
+                poseStack.scale(0.5f, 0.5f, 0.5f);
+                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
+                poseStack.popPose();
+            }
         });
     }
 
