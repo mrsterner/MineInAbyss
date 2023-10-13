@@ -4,6 +4,7 @@ import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.common.util.Constants;
 import dev.sterner.mineinabyss.common.util.CurseUtils;
 import dev.sterner.mineinabyss.registry.MIARegistries;
+import dev.sterner.mineinabyss.registry.MIATags;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -29,36 +30,34 @@ public class CurseManager {
     public static void tick(LivingEvent.LivingTickEvent event) {
         LivingEntity livingEntity = event.getEntity();
 
-        if (!(livingEntity instanceof Player)) {
-            return;//TODO remove Player and replace with humanoid
+        if (!livingEntity.getType().is(MIATags.CURSE_SUSCEPTIBLE)) {
+            return;
         }
 
-        LazyOptional<MIALivingEntityDataCapability> capabilityOptional = MIALivingEntityDataCapability.getCapabilityOptional(livingEntity);
-        if (capabilityOptional.isPresent()) {
-            CurseManager manager = capabilityOptional.orElse(new MIALivingEntityDataCapability()).curseManager;
+        MIALivingEntityDataCapability capability = MIALivingEntityDataCapability.getCapability(livingEntity);
+        CurseManager manager = capability.curseManager;
 
-            manager.checkCooldown++;
+        manager.checkCooldown++;
 
-            manager.tryAddCurse(livingEntity);
+        manager.tryAddCurse(livingEntity);
 
-            if (manager.isInCurse()) {
-                manager.tryUpdateCurseIntensity(livingEntity);
+        if (manager.isInCurse()) {
+            manager.tryUpdateCurseIntensity(livingEntity);
 
-                CurseUtils.updateLowestY(manager, livingEntity);
+            CurseUtils.updateLowestY(manager, livingEntity);
 
-                //Common
-                manager.curse.tickEffect(livingEntity.getCommandSenderWorld(), livingEntity);
+            //Common
+            manager.curse.tickEffect(livingEntity.getCommandSenderWorld(), livingEntity);
 
+            if (CurseUtils.checkAscending(manager, livingEntity)) {
+                manager.curse.tickAscensionEffect(livingEntity.getCommandSenderWorld(), livingEntity);
+            }
+
+            //Client
+            if (livingEntity.level() instanceof ClientLevel clientWorld) {
+                manager.curse.tickClientEffect(clientWorld, livingEntity);
                 if (CurseUtils.checkAscending(manager, livingEntity)) {
-                    manager.curse.tickAscensionEffect(livingEntity.getCommandSenderWorld(), livingEntity);
-                }
-
-                //Client
-                if (livingEntity.level() instanceof ClientLevel clientWorld) {
-                    manager.curse.tickClientEffect(clientWorld, livingEntity);
-                    if (CurseUtils.checkAscending(manager, livingEntity)) {
-                        manager.curse.tickAscensionEffectClient(clientWorld, livingEntity);
-                    }
+                    manager.curse.tickAscensionEffectClient(clientWorld, livingEntity);
                 }
             }
         }

@@ -1,7 +1,9 @@
 package dev.sterner.mineinabyss.common.cradle;
 
+import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.common.util.Constants;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
 public class CradleManager {
@@ -12,7 +14,12 @@ public class CradleManager {
     }
 
     public static void tick(LivingEvent.LivingTickEvent event) {
-
+        LivingEntity livingEntity = event.getEntity();
+        MIALivingEntityDataCapability capability = MIALivingEntityDataCapability.getCapability(livingEntity);
+        CradleManager cradleManager = capability.cradleManager;
+        if (cradleManager.isHost()) {
+            //TODO Do Tick
+        }
     }
 
     public void writeCurseToNbt(CompoundTag tag) {
