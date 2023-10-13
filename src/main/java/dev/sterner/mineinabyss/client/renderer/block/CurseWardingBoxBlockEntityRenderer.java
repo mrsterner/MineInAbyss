@@ -1,11 +1,9 @@
 package dev.sterner.mineinabyss.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import dev.sterner.mineinabyss.client.model.CurseWardingBoxBlockEntityModel;
 import dev.sterner.mineinabyss.common.block.CurseWardingBoxBlockEntity;
-import mod.azure.azurelib.cache.object.BakedGeoModel;
 import mod.azure.azurelib.cache.object.GeoBone;
 import mod.azure.azurelib.renderer.GeoBlockRenderer;
 import mod.azure.azurelib.renderer.layer.BlockAndItemGeoLayer;

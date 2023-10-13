@@ -23,5 +23,6 @@ public class Constants {
         String REVIVED_TIMER = "RevivedTimer";
         String OPENING_TIMER = "OpeningTimer";
         String CLOSING = "Closing";
+        String HOST = "Host";
     }
 }

@@ -1,6 +1,7 @@
 package dev.sterner.mineinabyss.capability;
 
 import dev.sterner.mineinabyss.MineInAbyss;
+import dev.sterner.mineinabyss.common.cradle.CradleManager;
 import dev.sterner.mineinabyss.common.curse.CurseManager;
 import dev.sterner.mineinabyss.common.networking.SyncLivingCapabilityDataPacket;
 import dev.sterner.mineinabyss.common.util.Constants;
@@ -17,7 +18,6 @@ import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -27,7 +27,8 @@ import team.lodestar.lodestone.systems.capability.LodestoneCapabilityProvider;
 
 public class MIALivingEntityDataCapability implements LodestoneCapability {
 
-    public CurseManager manager = new CurseManager();
+    public CurseManager curseManager = new CurseManager();
+    public CradleManager cradleManager = new CradleManager();
 
     public boolean isRevived = false;
     public long revivedTimer = -1;
@@ -54,9 +55,9 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
      * When a mob is spawned with the curse warding box, set its life to be temporary.
      *
      * @param livingEntity revived entity
-     * @param time time in ticks the mob will stay alive
+     * @param time         time in ticks the mob will stay alive
      */
-    public static void setRevived(LivingEntity livingEntity, long time){
+    public static void setRevived(LivingEntity livingEntity, long time) {
         MIALivingEntityDataCapability capability = getCapability(livingEntity);
         capability.isRevived = true;
         capability.revivedTimer = time;
@@ -70,7 +71,7 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
      *
      * @param livingEntity entity to remove status from
      */
-    public static void removeRevived(LivingEntity livingEntity){
+    public static void removeRevived(LivingEntity livingEntity) {
         MIALivingEntityDataCapability capability = getCapability(livingEntity);
         capability.isRevived = false;
         capability.revivedTimer = -1;
@@ -110,7 +111,8 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
         tag.putBoolean(Constants.Nbt.IS_REVIVED, this.isRevived);
         tag.putLong(Constants.Nbt.REVIVED_TIMER, this.revivedTimer);
 
-        manager.writeCurseToNbt(manager, tag);
+        curseManager.writeCurseToNbt(tag);
+        cradleManager.writeCurseToNbt(tag);
 
         return tag;
     }
@@ -120,7 +122,8 @@ public class MIALivingEntityDataCapability implements LodestoneCapability {
         this.isRevived = tag.getBoolean(Constants.Nbt.IS_REVIVED);
         this.revivedTimer = tag.getInt(Constants.Nbt.REVIVED_TIMER);
 
-        manager.readCurseFromNbt(manager, tag);
+        curseManager.readCurseFromNbt(tag);
+        cradleManager.readCurseFromNbt(tag);
     }
 
     public static void syncEntityCapability(PlayerEvent.StartTracking event) {

@@ -13,7 +13,6 @@ import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -22,8 +21,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
-import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,12 +29,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import team.lodestar.lodestone.systems.multiblock.MultiBlockCoreEntity;
 import team.lodestar.lodestone.systems.multiblock.MultiBlockStructure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -82,11 +77,11 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
 
         if (isOpen() && progress > 20 * 10) {
             Direction direction = getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING);
-            Vec3 offset = switch (direction){
-                case EAST -> new Vec3(2,1,0.5);
-                case WEST -> new Vec3(-1,1,0.5);
-                case NORTH -> new Vec3(0.5,1,-1);
-                default -> new Vec3(0.5,1,2);
+            Vec3 offset = switch (direction) {
+                case EAST -> new Vec3(2, 1, 0.5);
+                case WEST -> new Vec3(-1, 1, 0.5);
+                case NORTH -> new Vec3(0.5, 1, -1);
+                default -> new Vec3(0.5, 1, 2);
             };
 
             spawnEntity(level, getBlockPos().getCenter().add(offset));
@@ -94,7 +89,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
 
     }
 
-    public void changeState(){
+    public void changeState() {
         isClosing = isOpen();
         isOpening = !isOpen();
 
@@ -102,7 +97,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         setChanged();
     }
 
-    public boolean spawnEntity(Level level, Vec3 spawnPos){
+    public boolean spawnEntity(Level level, Vec3 spawnPos) {
         boolean bl = false;
         EntityType<?> entityType = MeatToEntityDataReloadListener.getEntity(item);
         if (entityType != null && getLevel() != null) {
@@ -171,7 +166,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
         }
     }
 
-    public boolean isOpen(){
+    public boolean isOpen() {
         return isOpening && openingTimer == 0;
     }
 
@@ -194,7 +189,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
 
             if (this.isOpening && !this.isClosing) {
                 return state.setAndContinue(RawAnimation.begin().thenPlay("opening"));
-            } else if (this.isClosing){
+            } else if (this.isClosing) {
                 return state.setAndContinue(RawAnimation.begin().thenPlay("closing"));
             }
 

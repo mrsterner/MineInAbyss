@@ -1,6 +1,5 @@
 package dev.sterner.mineinabyss.common.curse;
 
-import dev.sterner.mineinabyss.MineInAbyss;
 import dev.sterner.mineinabyss.capability.MIALivingEntityDataCapability;
 import dev.sterner.mineinabyss.common.util.Constants;
 import dev.sterner.mineinabyss.common.util.CurseUtils;
@@ -16,9 +15,9 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 public class CurseManager {
     private final int MAX_COOLDOWN = 2 * 20;
     private boolean isInCurse = false;
-    private boolean wasInCurse = false;
     private boolean isImmune = false;
     private Curse curse = MIARegistries.NONE.get();
+
     private int checkCooldown = 0;
     private int currentY;
     private TimeSpentOnY timeSpentOnY;
@@ -36,7 +35,7 @@ public class CurseManager {
 
         LazyOptional<MIALivingEntityDataCapability> capabilityOptional = MIALivingEntityDataCapability.getCapabilityOptional(livingEntity);
         if (capabilityOptional.isPresent()) {
-            CurseManager manager = capabilityOptional.orElse(new MIALivingEntityDataCapability()).manager;
+            CurseManager manager = capabilityOptional.orElse(new MIALivingEntityDataCapability()).curseManager;
 
             manager.checkCooldown++;
 
@@ -82,43 +81,40 @@ public class CurseManager {
         }
     }
 
-    public void writeCurseToNbt(CurseManager manager, CompoundTag nbt) {
-        nbt.putInt(Constants.Nbt.COOLDOWN, manager.checkCooldown);
-        nbt.putInt(Constants.Nbt.CURRENT_Y, manager.currentY);
-        nbt.putBoolean(Constants.Nbt.IMMUNE, manager.isImmune);
-        nbt.putBoolean(Constants.Nbt.IS_IN_CURSE, manager.isInCurse);
+    public void writeCurseToNbt(CompoundTag nbt) {
+        nbt.putInt(Constants.Nbt.COOLDOWN, getCheckCooldown());
+        nbt.putInt(Constants.Nbt.CURRENT_Y, getCurrentY());
+        nbt.putBoolean(Constants.Nbt.IMMUNE, isImmune());
+        nbt.putBoolean(Constants.Nbt.IS_IN_CURSE, isInCurse());
 
-        if (manager.curse != null) {
-            nbt.putString(Constants.Nbt.CURSE, MIARegistries.CURSE_REGISTRY.get().getKey(manager.curse).toString());
+        if (getCurse() != null) {
+            nbt.putString(Constants.Nbt.CURSE, MIARegistries.CURSE_REGISTRY.get().getKey(getCurse()).toString());
         }
 
-        if (manager.timeSpentOnY != null) {
-            nbt.putInt(Constants.Nbt.TIME_Y, manager.timeSpentOnY.y());
-            nbt.putLong(Constants.Nbt.TIME_AGE, manager.timeSpentOnY.age());
+        if (getTimeSpentOnY() != null) {
+            nbt.putInt(Constants.Nbt.TIME_Y, getTimeSpentOnY().y());
+            nbt.putLong(Constants.Nbt.TIME_AGE, getTimeSpentOnY().age());
         }
     }
 
-    public CurseManager readCurseFromNbt(CurseManager manager, CompoundTag nbt) {
-        manager.checkCooldown = nbt.getInt(Constants.Nbt.COOLDOWN);
-        manager.timeSpentOnY = new TimeSpentOnY(nbt.getInt(Constants.Nbt.TIME_Y), nbt.getLong(Constants.Nbt.TIME_AGE));
-        manager.currentY = nbt.getInt(Constants.Nbt.CURRENT_Y);
-        manager.isImmune = nbt.getBoolean(Constants.Nbt.IMMUNE);
-        manager.isInCurse = nbt.getBoolean(Constants.Nbt.IS_IN_CURSE);
+    public void readCurseFromNbt(CompoundTag nbt) {
+        setCheckCooldown(nbt.getInt(Constants.Nbt.COOLDOWN));
+        setTimeSpentOnY(new TimeSpentOnY(nbt.getInt(Constants.Nbt.TIME_Y), nbt.getLong(Constants.Nbt.TIME_AGE)));
+        setCurrentY(nbt.getInt(Constants.Nbt.CURRENT_Y));
+        setImmune(nbt.getBoolean(Constants.Nbt.IMMUNE));
+        setInCurse(nbt.getBoolean(Constants.Nbt.IS_IN_CURSE));
         Curse curse = MIARegistries.CURSE_REGISTRY.get().getValue(new ResourceLocation(nbt.getString(Constants.Nbt.CURSE)));
         if (curse != null) {
-            manager.curse = curse;
+            setCurse(curse);
         }
-        return manager;
     }
 
     public boolean isInCurse() {
-        return true;
-        //TODO return isInCurse;
+        return isInCurse;
     }
 
     public void setInCurse(boolean inCurse) {
         isInCurse = inCurse;
-        sync();
     }
 
     public Curse getCurse() {
@@ -127,7 +123,6 @@ public class CurseManager {
 
     public void setCurse(Curse curse) {
         this.curse = curse;
-        sync();
     }
 
     public boolean isImmune() {
@@ -136,7 +131,6 @@ public class CurseManager {
 
     public void setImmune(boolean immune) {
         isImmune = immune;
-        sync();
     }
 
     public int getCurrentY() {
@@ -145,7 +139,6 @@ public class CurseManager {
 
     public void setCurrentY(int currentY) {
         this.currentY = currentY;
-        sync();
     }
 
     public TimeSpentOnY getTimeSpentOnY() {
@@ -154,24 +147,18 @@ public class CurseManager {
 
     public void setTimeSpentOnY(TimeSpentOnY timeSpentOnY) {
         this.timeSpentOnY = timeSpentOnY;
-        sync();
     }
 
     public void setTimeSpentOnY(int y, long age) {
         setTimeSpentOnY(new TimeSpentOnY(y, age));
     }
 
-    public boolean isWasInCurse() {
-        return wasInCurse;
+    public int getCheckCooldown() {
+        return checkCooldown;
     }
 
-    public void setWasInCurse(boolean wasInCurse) {
-        this.wasInCurse = wasInCurse;
-        sync();
-    }
-
-    private void sync() {
-        //TODO
+    public void setCheckCooldown(int checkCooldown) {
+        this.checkCooldown = checkCooldown;
     }
 
     public record TimeSpentOnY(int y, long age) {
