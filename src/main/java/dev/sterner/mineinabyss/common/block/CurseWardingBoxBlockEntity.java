@@ -11,6 +11,7 @@ import mod.azure.azurelib.core.animation.AnimationController;
 import mod.azure.azurelib.core.animation.RawAnimation;
 import mod.azure.azurelib.util.AzureLibUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,9 +40,7 @@ import java.util.function.Supplier;
 public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements GeoBlockEntity {
     private final AnimatableInstanceCache cache = AzureLibUtil.createInstanceCache(this);
 
-    private ItemStack itemStack = ItemStack.EMPTY;
-    @Deprecated
-    private EntityType<?> entityType;
+    public Item item = null;
     private boolean isOpen = false;
     private int progress = 0;
 
@@ -63,11 +63,11 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     @Override
     public void tick() {
         super.tick();
-        if (!itemStack.isEmpty()) {
+        if (item != null) {
             progress++;
             if (progress > 20 * 10) {//TODO not hardcode this
 
-                EntityType<?> entityType = MeatToEntityDataReloadListener.getEntity(itemStack.getItem());
+                EntityType<?> entityType = MeatToEntityDataReloadListener.getEntity(item);
                 if (entityType != null && getLevel() != null) {
                     Entity entity = entityType.create(getLevel());
                     if (entity != null) {
@@ -76,7 +76,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
                     }
                 }
 
-                itemStack = ItemStack.EMPTY;
+                item = null;
                 progress = 0;
             }
         }
@@ -85,9 +85,22 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
 
     @Override
     public InteractionResult onUse(Player player, InteractionHand hand) {
+        ItemStack itemStack = player.getItemInHand(hand);
+        boolean exit = false;
         for (Map.Entry<ResourceLocation, MeatToEntityDataReloadListener.MeatData> i : MeatToEntityDataReloadListener.MEAT_DATA.entrySet()) {
-            System.out.println(i.getKey());
-            System.out.println(i.getValue().items.stream().toList());
+
+            if (exit) {
+                break;
+            }
+
+            for (Item item : i.getValue().items) {
+                if (item.equals(itemStack.getItem())) {
+                    this.item = item;
+                    itemStack.shrink(1);
+                    exit = true;
+                    break;
+                }
+            }
         }
 
         return super.onUse(player, hand);
@@ -99,12 +112,8 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
 
         pTag.putBoolean(Constants.Nbt.OPEN, this.isOpen);
 
-        if (!this.itemStack.isEmpty()) {
-            pTag.put(Constants.Nbt.ITEM, this.itemStack.save(new CompoundTag()));
-        }
-
-        if (this.entityType != null) {
-            pTag.putString(Constants.Nbt.ENTITY, ForgeRegistries.ENTITY_TYPES.getKey(this.entityType).toString());
+        if (item != null) {
+            pTag.put(Constants.Nbt.ITEM, this.item.getDefaultInstance().save(new CompoundTag()));
         }
     }
 
@@ -116,11 +125,7 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
 
         CompoundTag itemTag = pTag.getCompound(Constants.Nbt.ITEM);
         if (!itemTag.isEmpty()) {
-            this.itemStack = ItemStack.of(itemTag);
-        }
-
-        if (pTag.contains(Constants.Nbt.ENTITY)) {
-            this.entityType = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(pTag.getString(Constants.Nbt.ENTITY)));
+            this.item = ItemStack.of(itemTag).getItem();
         }
     }
 
@@ -140,10 +145,10 @@ public class CurseWardingBoxBlockEntity extends MultiBlockCoreEntity implements 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, state -> {
-            if (getLevel().getDayTime() > 23000 || getLevel().getDayTime() < 13000) {
+            if (this.item == null) {
                 return state.setAndContinue(RawAnimation.begin().thenPlay("opening"));
             } else {
-                return state.setAndContinue(RawAnimation.begin().thenPlay("closed"));
+                return state.setAndContinue(RawAnimation.begin().thenPlay("closing"));
             }
         }));
     }
